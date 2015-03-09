@@ -1,0 +1,39 @@
+
+
+---
+title: "Reproducible Research Project 1"
+output: html_document
+---
+
+
+```{r load data}
+setwd("G:/Coursera/Reproducible Research")
+options(stringsAsFactors = FALSE)
+
+#Load data.
+stepData <- read.csv("activity.csv")
+
+#Change date to a date variable.
+stepData$date <- as.Date(stepData$date)
+```
+
+
+```{r total steps per day}
+#Calculate steps per day by summing across date variable.
+stepsPerDay <- with(stepData, tapply(steps, date, sum, na.rm = TRUE))
+
+#Produce histogram.
+hist(stepsPerDay)
+
+#Calculate mean and median steps per day.
+print(paste("Mean =", mean(stepsPerDay)))
+print(paste("Median =", median(stepsPerDay)))
+```
+
+
+
+
+
+
+
+
