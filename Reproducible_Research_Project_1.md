@@ -1,14 +1,10 @@
+# Reproducible Research: Peer Assessment 1
 
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
 
 
 ## Loading and preprocessing the data
-```{r load data}
+
+```r
 setwd("G:/Coursera/ReproducibleResearch")
 options(stringsAsFactors = FALSE)
 library(ggplot2)
@@ -22,22 +18,39 @@ stepData$date <- as.Date(stepData$date)
 
 
 ## What is mean total number of steps taken per day?
-```{r total steps per day}
+
+```r
 #Calculate steps per day by summing across date variable.
 stepsPerDay <- with(stepData, tapply(steps, date, sum))
 
 #Produce histogram.
 ggplot(as.data.frame(stepsPerDay)) + 
   geom_histogram(aes(stepsPerDay), fill = "lightblue", col = "black", binwidth = 1000)
+```
 
+![](Reproducible_Research_Project_1_files/figure-html/total steps per day-1.png) 
+
+```r
 #Calculate mean and median steps per day.
 print(paste("Mean =", round(mean(stepsPerDay, na.rm = TRUE), 1)))
+```
+
+```
+## [1] "Mean = 10766.2"
+```
+
+```r
 print(paste("Median =", round(median(stepsPerDay, na.rm = TRUE), 1)))
+```
+
+```
+## [1] "Median = 10765"
 ```
 
 
 ## What is the average daily activity pattern?
-```{r activity pattern}
+
+```r
 #Calculate the activity pattern by averaging across interval variable.
 dailyPattern <- with(stepData, tapply(steps, interval, mean, na.rm = TRUE))
 dailyPattern <- data.frame(interval = as.integer(names(dailyPattern)), 
@@ -45,9 +58,17 @@ dailyPattern <- data.frame(interval = as.integer(names(dailyPattern)),
 
 #plot the pattern.
 qplot(interval, avgSteps, data = dailyPattern, geom = "line")
+```
 
+![](Reproducible_Research_Project_1_files/figure-html/activity pattern-1.png) 
+
+```r
 #find the interval with the highest number of steps on average.
 print(subset(dailyPattern, avgSteps == max(dailyPattern$avgSteps))$interval)
+```
+
+```
+## [1] 835
 ```
 
 
@@ -55,11 +76,17 @@ print(subset(dailyPattern, avgSteps == max(dailyPattern$avgSteps))$interval)
 
 
 ## Imputing missing values
-```{r missing values}
 
+```r
 #Calculate and report the total number of missing values in the dataset.
 sum(is.na(stepData$steps))
+```
 
+```
+## [1] 2304
+```
+
+```r
 #Using the 5 minute interval mean to impute missing values.
 missingData <- stepData[is.na(stepData$steps), ]
 
@@ -78,20 +105,40 @@ stepDataComplete <- rbind(stepData[!is.na(stepData$steps), ], missingData)
 stepsPerDay2 <- with(stepDataComplete, tapply(steps, date, sum, na.rm = TRUE))
 ggplot(as.data.frame(stepsPerDay2)) + 
   geom_histogram(aes(stepsPerDay2), fill = "lightblue", col = "black", binwidth = 1000)
+```
 
+![](Reproducible_Research_Project_1_files/figure-html/missing values-1.png) 
 
+```r
 #Calculate mean and median steps per day.
 print(paste("Mean =", round(mean(stepsPerDay2, na.rm = TRUE), 1)))
-print(paste("Median =", round(median(stepsPerDay2, na.rm = TRUE), 1)))
+```
 
+```
+## [1] "Mean = 10766.2"
+```
+
+```r
+print(paste("Median =", round(median(stepsPerDay2, na.rm = TRUE), 1)))
+```
+
+```
+## [1] "Median = 10766.2"
+```
+
+```r
 print("The mean has not been altered, because the mean was used when imputing values. The median has been made equal to the mean, because one of the imputed days is now the median value.")
+```
+
+```
+## [1] "The mean has not been altered, because the mean was used when imputing values. The median has been made equal to the mean, because one of the imputed days is now the median value."
 ```
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r weekday vs weekend}
 
+```r
 #Create a new factor variable in the dataset with two levels - "weekday" and "weekend" 
 #indicating whether a given date is a weekday or weekend day.
 
@@ -110,3 +157,5 @@ dailyPattern2 <- data.frame(
 
 qplot(interval, avgSteps, data = dailyPattern2, geom = "line", facets = weekday ~ .)
 ```
+
+![](Reproducible_Research_Project_1_files/figure-html/weekday vs weekend-1.png) 
